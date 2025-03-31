@@ -1,4 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://cxu2y8s0r4ahf"]
+[gd_scene load_steps=4 format=3 uid="uid://cxu2y8s0r4ahf"]
+
+[ext_resource type="Texture2D" uid="uid://dsl3il2hxpip1" path="res://Graphics/Cards/Card.png" id="1_pnb5n"]
 
 [sub_resource type="GDScript" id="GDScript_up0cc"]
 script/source = "extends Area2D
@@ -40,10 +42,15 @@ func card_width() -> float:
 	return 0.0
 "
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3p273"]
+size = Vector2(55, 68)
+
 [node name="Card" type="Area2D"]
 script = SubResource("GDScript_up0cc")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(3.5, -3)
+shape = SubResource("RectangleShape2D_3p273")
 
 [node name="Sprite" type="Sprite2D" parent="."]
 
@@ -58,3 +65,8 @@ physics_interpolation_mode = 0
 auto_translate_mode = 0
 editor_description = ""
 script = null
+
+[node name="Card" type="Sprite2D" parent="."]
+position = Vector2(4, -5)
+scale = Vector2(5, 5)
+texture = ExtResource("1_pnb5n")
