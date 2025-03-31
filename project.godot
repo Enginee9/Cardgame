@@ -14,11 +14,12 @@ _global_script_class_icons={}
 [application]
 
 config/name="Poker War Tutorial"
-run/main_scene="uid://dd27w5hoh7348"
-config/features=PackedStringArray("4.4", "Forward Plus")
+run/main_scene="res://Main.tscn"
+config/features=PackedStringArray("4.3", "Forward Plus")
 boot_splash/image="res://Graphics/Godotblack.PNG"
 config/icon="res://icon.png"
 boot_splash/size/viewport_width=1152
+<<<<<<<HEADconfig/features=PackedStringArray("4.3", "Forward Plus")
 
 [display]
 
@@ -29,10 +30,6 @@ window/size/width=600
 window/size/height=400
 window/size/test_width=960
 window/size/test_height=640
-
-[global_group]
-
-players=""
 
 [importer_defaults]
 
@@ -67,6 +64,7 @@ texture={
 
 [rendering]
 
+textures/canvas_textures/default_texture_filter=0
 environment/defaults/default_clear_color=Color(0, 0, 0, 1)
 quality/2d/use_pixel_snap=true
 environment/default_environment="res://default_env.tres"
