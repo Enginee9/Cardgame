@@ -8,41 +8,48 @@
 
 config_version=5
 
+_global_script_classes=[]
+_global_script_class_icons={}
+
 [application]
 
-config/name="Blackjack"
-run/main_scene="res://main.tscn"
+config/name="Poker War Tutorial"
+run/main_scene="res://Main.tscn"
 config/features=PackedStringArray("4.4", "Forward Plus")
-config/icon="res://icon.svg"
+boot_splash/image="res://Graphics/Godotblack.PNG"
+config/icon="res://icon.png"
 boot_splash/size/viewport_width=1152
 
 [display]
 
 window/size/viewport_width=600
 window/size/viewport_height=400
+window/stretch/mode="2d"
+window/size/width=600
+window/size/height=400
+window/size/test_width=960
+window/size/test_height=640
 
 [importer_defaults]
 
 texture={
-"compress/channel_pack": 0,
-"compress/hdr_compression": 1,
-"compress/high_quality": false,
+"compress/bptc_ldr": 0,
+"compress/hdr_mode": 0,
 "compress/lossy_quality": 0.7,
 "compress/mode": 0,
 "compress/normal_map": 0,
-"detect_3d/compress_to": 0,
-"editor/convert_colors_with_editor_theme": false,
-"editor/scale_with_editor_scale": false,
-"mipmaps/generate": false,
-"mipmaps/limit": -1,
+"detect_3d": false,
+"flags/anisotropic": false,
+"flags/filter": false,
+"flags/mipmaps": false,
+"flags/repeat": 0,
+"flags/srgb": 2,
+"process/HDR_as_SRGB": false,
 "process/fix_alpha_border": true,
-"process/hdr_as_srgb": false,
-"process/hdr_clamp_exposure": false,
-"process/normal_map_invert_y": false,
+"process/invert_color": false,
 "process/premult_alpha": false,
-"process/size_limit": 0,
-"roughness/mode": 0,
-"roughness/src_normal": "",
+"size_limit": 0,
+"stream": false,
 "svg/scale": 1.0
 }
 
@@ -53,3 +60,8 @@ texture={
 2d/stretch/mode="disabled"
 2d/stretch/scale=1.0
 2d/size/viewport_height=648
+
+[rendering]
+
+quality/2d/use_pixel_snap=true
+environment/default_environment="res://default_env.tres"

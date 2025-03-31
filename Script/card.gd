@@ -12,9 +12,9 @@ signal card_selected(node: Node)
 		change_cardscale(value)
 
 # Regular variables
-var cardname: String
-var cardvalue
-var cardsuit: String
+var card_name: String
+var card_value: int
+var card_suit: String
 var dealt: bool = false
 var selectable: bool = false:
 	set(value):

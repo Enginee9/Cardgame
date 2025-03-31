@@ -1,12 +1,60 @@
-[gd_scene load_steps=2 format=3 uid="uid://b3c7v4krixnp5"]
+[gd_scene load_steps=2 format=3 uid="uid://cxu2y8s0r4ahf"]
 
-[ext_resource type="Script" path="res://Script/card.gd" id="1_u25vi"]
+[sub_resource type="GDScript" id="GDScript_up0cc"]
+script/source = "extends Area2D
+
+# Card properties
+var card_name: String
+var card_value: int
+var card_suit: String
+
+# Exported variables
+@export var card_sprite: Texture2D:
+	set(value):
+		card_sprite = value
+		if $Sprite:
+			$Sprite.texture = value
+
+@export var card_scale: Vector2 = Vector2.ONE:
+	set(value):
+		card_scale = value
+		scale = value
+
+func _ready():
+	# Initialize sprite if exported properties were set in inspector
+	if card_sprite:
+		$Sprite.texture = card_sprite
+	scale = card_scale
+
+func change_sprite(res: String) -> void:
+	var texture = load(res)
+	if texture:
+		card_sprite = texture
+		$Sprite.texture = texture
+	else:
+		push_error(\"Failed to load texture: \", res)
+
+func card_width() -> float:
+	if $Sprite.texture:
+		return $Sprite.texture.get_width() * $Sprite.scale.x
+	return 0.0
+"
 
 [node name="Card" type="Area2D"]
-script = ExtResource("1_u25vi")
-
-[node name="Sprite2D" type="Sprite2D" parent="."]
+script = SubResource("GDScript_up0cc")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 
-[node name="Tween" type="Node" parent="."]
+[node name="Sprite" type="Sprite2D" parent="."]
+
+[node name="Tween" type="Tween" parent="."]
+_import_path = NodePath("")
+unique_name_in_owner = false
+process_mode = 0
+process_priority = 0
+process_physics_priority = 0
+process_thread_group = 0
+physics_interpolation_mode = 0
+auto_translate_mode = 0
+editor_description = ""
+script = null
