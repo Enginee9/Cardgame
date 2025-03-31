@@ -33,30 +33,44 @@ var card_suits = ["spade","spade","spade","spade","spade","spade","spade","spade
 				"diamond","diamond","diamond","diamond","diamond"]
 var deck = []
 # Called when the node enters the scene tree for the first time.
-func _ready():
-	randomize()
-	makedeck()
-
-func give_cards(num):
-	var cardreturn = []
-	for i in num:
-		cardreturn.append(deck[i])
-		print(cardreturn[i].card_name)
-	for i in cardreturn.size():
-		deck.remove_at(0)
-	return cardreturn
-
 func makedeck():
 	var cardscene = load("res://Scenes/Card.tscn")
-	var card
+	if not cardscene:
+		push_error("Failed to load Card scene!")
+		return
+		
 	for i in card_names.size():
-		card = cardscene.instantiate()
+		var card = cardscene.instantiate()
 		card.card_name = card_names[i]
 		card.card_value = card_values[i]
 		card.card_suit = card_suits[i]
+		
+		# Immediately load and set texture
+		var texture_path = _get_texture_path(card_suits[i], card_values[i])
+		var texture = load(texture_path)
+		if texture:
+			card.get_node("Sprite").texture = texture
+		else:
+			push_error("Failed to load texture: ", texture_path)
+		
 		deck.append(card)
+	
 	deck.shuffle()
+	print("Deck ready with ", deck.size(), " cards")
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
+func _get_texture_path(suit: String, value: int) -> String:
+	var suit_map = {
+		"spade": "Spades",
+		"heart": "Hearts",
+		"club": "Clubs",
+		"diamond": "Diamonds"
+	}
+	var value_map = {
+		1: "Ace",
+		11: "Jack",
+		12: "Queen",
+		13: "King"
+	}
+	
+	var value_str = value_map.get(value, str(value))
+	return "res://Graphics/Cards/%s_%s.png" % [suit_map[suit], value_str]

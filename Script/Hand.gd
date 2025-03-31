@@ -1,110 +1,84 @@
 extends Node2D
 
-onready var Deck = get_node("../Deck")
-onready var CardHolder = $CardHolder
+@onready var deck = get_node("../Deck")
 
+var hand: Array = []
+var card_path: String = "res://Graphics/Cards/"
+var card_width: float
+@export var card_scale: Vector2 = Vector2(1.5, 1.5)
 
-var hand = []
-var cardpath = "res://Graphics/Cards/"
-var card_width
+func draw_cards(num: int) -> void:
+	print("--- DRAW CARDS DEBUG ---")
+	print("Deck node: ", deck)
+	var new_cards = deck.give_cards(num)
+	print("Cards received from deck: ", new_cards)
 
-export var health = 3 setget set_health
-export var playername = ""
-export var cardscale = Vector2(1.5,1.5)
+	if not new_cards:
+		push_error("No cards received from deck!")
+		return
 
-signal health_change(value)
-signal dead()
+	for card in new_cards:
+		print("\nCard instance: ", card)
+		print("Is instance valid? ", is_instance_valid(card))
+		print("Card in tree before adding? ", card.is_inside_tree())
 
-func draw_cards(num):
-	hand += Deck.give_cards(num)
-	initialize_cards()
+		if not is_instance_valid(card):
+			continue
+		if not card.is_inside_tree():
+			add_child(card)
+
+		print("Card in tree after adding? ", card.is_inside_tree())
+		print("Card position: ", card.position)
+
+		card.position = $DeckLocation.position
+		card.scale = Vector2(0.1, 0.1)
+		hand.append(card)
+
+	await get_tree().create_timer(0.1).timeout
+	sprite_cards()
 	place_cards()
 
-func initialize_cards():
-	var firstpart
-	var secondpart
-	var fullpart
-	for i in hand.size():
-		hand[i].cardscale = cardscale
-		hand[i].cardowner = playername
-		fullpart = ""
-		if hand[i].cardsuit == "spade":
-			firstpart = "Spades_"
-		elif hand[i].cardsuit == "diamond":
-			firstpart = "Diamonds_"
-		elif hand[i].cardsuit == "club":
-			firstpart = "Clubs_"
-		elif hand[i].cardsuit == "heart":
-			firstpart = "Hearts_"
-		if hand[i].cardvalue == 1:
-			secondpart = "Ace.png"
-		elif hand[i].cardvalue == 11:
-			secondpart = "Jack.png"
-		elif hand[i].cardvalue == 12:
-			secondpart = "Queen.png"
-		elif hand[i].cardvalue == 13:
-			secondpart = "King.png"
-		else:
-			secondpart = str(hand[i].cardvalue) + ".png"
-		fullpart = firstpart + secondpart
-		hand[i].change_sprite(cardpath+fullpart)
-		hand[i].connect("active_card", self, "_active_card")
-	
-func place_cards():
-	var path_length = $Path2D.curve.get_baked_length()
-	var space
-	var ideal_cardwidth
-	var hand_width
+func place_cards() -> void:
+	if hand.is_empty():
+		return
+
+	var start_pos = $Path2D/PathFollow2D/DeckSpawner.global_position
+	var spacing = min(150, $Path2D.curve.get_baked_length() / hand.size())
 
 	for i in hand.size():
-		card_width = hand[0].card_width()
-		ideal_cardwidth = card_width * 1.5
-		hand_width = ideal_cardwidth * hand.size()
-		CardHolder.add_child(hand[i])
+		var target_pos = start_pos + Vector2(spacing * i, 0)
+		hand[i].move_card(target_pos, 0)
+		hand[i].z_index = i
+		print("Card ", i, " placed at: ", target_pos)
 
-		space = path_length
-		$Path2D/PathFollow2D.offset = 0.0
-		if hand_width < path_length:
-			$Path2D/PathFollow2D.offset = (space - hand_width)/2
+func sprite_cards() -> void:
+	for card in hand:
+		if not card:
+			continue
 
-			print("ideal cardwidth space: " + str(ideal_cardwidth))
-		else:
-			ideal_cardwidth = space / hand.size()
-			print("ideal cardwidth crowded: " + str(ideal_cardwidth))
-		
-		for card in hand.size():
-			if !hand[card].dealt:
-				hand[card].position = $DeckLocation.position
-			hand[card].handposition = $Path2D/PathFollow2D/DeckSpawner.get_global_position()
-			hand[card].handrotation = $Path2D/PathFollow2D/DeckSpawner.get_global_transform().get_rotation()
-			hand[card].move_card(hand[card].handposition, hand[card].handrotation)
-			hand[card].dealt = true
+		card.card_scale = card_scale
 
-			$Path2D/PathFollow2D.offset += ideal_cardwidth
-		$Path2D/PathFollow2D.offset = 0.0
+		var suit_part: String = ""
+		match card.card_suit:
+			"spade": suit_part = "Spades_"
+			"diamond": suit_part = "Diamonds_"
+			"club": suit_part = "Clubs_"
+			"heart": suit_part = "Hearts_"
 
-func get_hand():
-	return hand
+		var value_part: String = ""
+		match card.card_value:
+			1: value_part = "Ace.png"
+			11: value_part = "Jack.png"
+			12: value_part = "Queen.png"
+			13: value_part = "King.png"
+			_: value_part = str(card.card_value) + ".png"
 
-func reset_hand():
-	for i in hand.size():
-		hand[i].kill_card()
-	hand = []
+		var full_path = card_path + suit_part + value_part
+		print("Loading card texture: ", full_path)
+		card.change_sprite(full_path)
 
-func allow_selection(_selectable: bool):
-	for i in hand.size():
-		hand[i].selectable = _selectable
-
-func search_remove_card(_card):
-	var i = hand.find(_card)
-	hand.remove(i)
-
-func set_health(value):
-	health = value
-	emit_signal("health_change", value)
-	if health <= 0: 
-		emit_signal("dead")
-
-func _active_card(card):
-	for i in hand.size():
-		hand[i].make_active(card)
+func reset_hand() -> void:
+	for card in hand:
+		if is_instance_valid(card):
+			card.kill_card()
+	hand.clear()

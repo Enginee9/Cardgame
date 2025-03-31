@@ -1,0 +1,30 @@
+[gd_scene load_steps=3 format=3 uid="uid://c03ppqku17mxo"]
+
+[ext_resource type="Texture2D" uid="uid://dwp6wiqqcopyd" path="res://icon.png" id="1_0xaq6"]
+
+[sub_resource type="Curve2D" id="Curve2D_q1mbt"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 131, 386, -164, -125, 164, 125, 448, 385)
+}
+point_count = 2
+
+[node name="Hand" type="Node2D"]
+
+[node name="Path2D" type="Path2D" parent="."]
+position = Vector2(0, -20)
+curve = SubResource("Curve2D_q1mbt")
+
+[node name="PathFollow2D" type="PathFollow2D" parent="Path2D"]
+position = Vector2(289.611, 329.737)
+rotation = -0.0170814
+progress = 171.021
+
+[node name="DeckSpowner" type="Marker2D" parent="Path2D/PathFollow2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="Path2D/PathFollow2D/DeckSpowner"]
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("1_0xaq6")
+
+[node name="DeckLocation" type="Marker2D" parent="."]
+position = Vector2(316, 34)
+gizmo_extents = 0.0

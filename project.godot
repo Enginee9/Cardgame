@@ -14,7 +14,7 @@ _global_script_class_icons={}
 [application]
 
 config/name="Poker War Tutorial"
-run/main_scene="res://Main.tscn"
+run/main_scene="uid://dd27w5hoh7348"
 config/features=PackedStringArray("4.4", "Forward Plus")
 boot_splash/image="res://Graphics/Godotblack.PNG"
 config/icon="res://icon.png"
@@ -29,6 +29,10 @@ window/size/width=600
 window/size/height=400
 window/size/test_width=960
 window/size/test_height=640
+
+[global_group]
+
+players=""
 
 [importer_defaults]
 
