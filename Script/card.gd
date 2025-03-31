@@ -1,52 +1,64 @@
 extends Area2D
 
-var cardname
+# Signals
+signal active_card(node: Node)
+signal card_selected(node: Node)
+
+# Exported variables (Godot 4 syntax)
+@export var focus_move_on_y: int = 40
+@export var cardsprite: Texture2D
+@export var cardscale: Vector2 = Vector2(1, 1):
+	set(value):
+		change_cardscale(value)
+
+# Regular variables
+var cardname: String
 var cardvalue
-var cardsuit
-var dealt = false
-var selectable = false setget set_selectable
-var selected_card = false
-var front_sprite_path
+var cardsuit: String
+var dealt: bool = false
+var selectable: bool = false:
+	set(value):
+		set_selectable(value)
+var selected_card: bool = false
+var front_sprite_path: String
 var cardowner
-var touchable = true
+var touchable: bool = true
 
+var handposition: Vector2 = Vector2.ZERO
+var handrotation: float = 0.0
 
-export (int) var focus_move_on_y = 40
-export (Texture) var cardsprite
-var cardscale setget change_cardscale
-var handposition = Vector2.ZERO
-var handrotation = Vector2.ZERO
-
-signal active_card(node)
-signal card_selected(node)
-
-func set_selectable(val):
+func set_selectable(val: bool) -> void:
 	selectable = val
 
-func move_card(dest, rotate = null, _scale = null):
-		$Tween.interpolate_property(self, "position" , position, dest, 0.5, Tween.TRANS_BACK, Tween.EASE_OUT)
-		if rotate != null:
-			$Tween.interpolate_property(self, "rotation", rotation, rotate, 0.2, Tween.TRANS_LINEAR, Tween.EASE_IN)
-		if _scale != null:
-			$Tween.interpolate_property(self, "scale", scale, _scale, 0.5, Tween.TRANS_BACK, Tween.EASE_OUT)
-		$Tween.start()
+func move_card(dest: Vector2, rotate: Variant = null, _scale: Variant = null) -> void:
+	var tween = create_tween()
+	tween.tween_property(self, "position", dest, 0.5)\
+		.set_trans(Tween.TRANS_BACK)\
+		.set_ease(Tween.EASE_OUT)
+	
+	if rotate != null:
+		tween.parallel().tween_property(self, "rotation", rotate, 0.2)\
+			.set_trans(Tween.TRANS_LINEAR)\
+			.set_ease(Tween.EASE_IN)
+	
+	if _scale != null:
+		tween.parallel().tween_property(self, "scale", _scale, 0.5)\
+			.set_trans(Tween.TRANS_BACK)\
+			.set_ease(Tween.EASE_OUT)
 
-func change_sprite(res):
+func change_sprite(res: String) -> void:
 	$Sprite.texture = load(res)
 
-func change_cardscale(_scale):
+func change_cardscale(_scale: Vector2) -> void:
 	scale = _scale
 
-func card_width():
-	var cardwidth = $Sprite.texture.get_width() * scale.x
-	return cardwidth
+func card_width() -> float:
+	return $Sprite.texture.get_width() * scale.x
 
-func kill_card():
+func kill_card() -> void:
 	queue_free()
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
-func make_focus():
+
+func make_focus() -> void:
 	if selectable:
 		var position_shift = position
 		position_shift.y -= focus_move_on_y
@@ -56,28 +68,28 @@ func make_focus():
 		selected_card = true
 		emit_signal("active_card", self)
 
-func off_focus():
+func off_focus() -> void:
 	if selectable:
 		move_card(handposition, handrotation)
 		z_index = 1
 		selected_card = false
 
-func make_active(card):
+func make_active(card: Node) -> void:
 	if card != self:
 		off_focus()
 
-func _on_Card_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
+func _on_card_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
 	if touchable:
-		if event is InputEventMouseButton || event is InputEventScreenTouch:
-			if event.is_action_pressed("left_click") and selected_card || event.is_pressed() and selected_card  :
+		if event is InputEventMouseButton or event is InputEventScreenTouch:
+			if (event.is_action_pressed("left_click") and selected_card or (event.is_pressed() and selected_card)):
 				selected_card = false
 				emit_signal("card_selected", self)
 				touchable = false
-				$Touch_Timer.start()
-			elif !selected_card and event.is_action_pressed("left_click")|| !selected_card and event.is_pressed() :
+				$TouchTimer.start()
+			elif (not selected_card and event.is_action_pressed("left_click")) or (not selected_card and event.is_pressed()):
 				touchable = false
-				$Touch_Timer.start()
+				$TouchTimer.start()
 				make_focus()
 
-func _on_Touch_Timer_timeout():
+func _on_touch_timer_timeout() -> void:
 	touchable = true
