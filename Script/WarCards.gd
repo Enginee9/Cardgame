@@ -8,8 +8,8 @@ var player_card
 var enemy_card
 var winner
 
-onready var PlayerCardPosition = $PlayerCardPosition
-onready var EnemyCardPosition = $EnemyCardPosition
+@onready var PlayerCardPosition = $PlayerCardPosition
+@onready var EnemyCardPosition = $EnemyCardPosition
 
 signal war_played(winning_card)
 

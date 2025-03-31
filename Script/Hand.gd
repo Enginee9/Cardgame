@@ -108,8 +108,3 @@ func set_health(value):
 func _active_card(card):
 	for i in hand.size():
 		hand[i].make_active(card)
-
-
-
-
-

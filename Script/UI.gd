@@ -1,8 +1,8 @@
 extends CanvasLayer
 
 
-onready var PlayerHealth = $HealthContainer/PlayerHFull
-onready var EnemyHealth = $HealthContainer/EnemyHFull
+@onready var PlayerHealth := $HealthContainer/PlayerHFull as TextureRect
+@onready var EnemyHealth := $HealthContainer/EnemyHFull as TextureRect
 
 var msgqueue = []
 
@@ -10,13 +10,15 @@ var msgqueue = []
 func _ready():
 	pass # Replace with function body.
 
-func _process(delta):
+func _process(_delta: float) -> void:
 	if msgqueue.size() > 0:
-		if !$AnimationPlayer.is_playing():
-			$Alert.text = msgqueue[0]
-			msgqueue.remove(0)
-			$AnimationPlayer.play("DisplayAlert")
-			yield(get_node("AnimationPlayer"), "animation_finished")
+		if not $AnimationPlayer.is_playing():
+			display_next_message()
+
+func display_next_message() -> void:
+	$Alert.text = msgqueue.pop_front()
+	$AnimationPlayer.play("DisplayAlert")
+	await $AnimationPlayer.animation_finished
 
 func send_alert(msg):
 	msgqueue.append(msg)
