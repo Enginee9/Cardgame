@@ -8,15 +8,12 @@
 
 config_version=5
 
-_global_script_classes=[]
-_global_script_class_icons={}
-
 [application]
 
 config/name="Poker War Tutorial"
 run/main_scene="uid://dd27w5hoh7348"
 config/features=PackedStringArray("4.4", "Forward Plus")
-boot_splash/image="res://Graphics/Godotblack.PNG"
+boot_splash/image="uid://b04lfvrksyw0y"
 config/icon="res://icon.png"
 boot_splash/size/viewport_width=1152
 

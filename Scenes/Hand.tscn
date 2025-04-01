@@ -16,7 +16,7 @@ curve = SubResource("Curve2D_q1mbt")
 
 [node name="PathFollow2D" type="PathFollow2D" parent="Path2D"]
 position = Vector2(289.611, 329.737)
-rotation = -0.0170814
+rotation = -0.0170822
 progress = 171.021
 
 [node name="DeckSpowner" type="Marker2D" parent="Path2D/PathFollow2D"]
