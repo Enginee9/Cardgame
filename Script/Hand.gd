@@ -52,6 +52,7 @@ func place_cards():
 		ideal_cardwidth = card_width * 1.5
 		hand_width = ideal_cardwidth * hand.size()
 		add_child(hand[i])
+		print("Card",i,"position: ", hand[i].position)
 
 		space = path_length
 		$Path2D/PathFollow2D.offset = 0.0

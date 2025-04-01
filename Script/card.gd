@@ -23,7 +23,11 @@ func move_card(dest, rotate = null, _scale = null):
 		$Tween.start()
 
 func change_sprite(res):
-	$Sprite.texture = load(res)
+	var texture = load(res)
+	if texture:
+		$Sprite.texture = texture
+	else:
+		push_error("Failed to load texture"+res)
 
 func change_cardscale(_scale):
 	scale = _scale
@@ -34,7 +38,8 @@ func card_width():
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
+	visible=true
+	print("Hand visibility:",visible)
 
 func kill_card():
 	queue_free()

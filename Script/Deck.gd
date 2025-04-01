@@ -74,3 +74,9 @@ func _get_texture_path(suit: String, value: int) -> String:
 	
 	var value_str = value_map.get(value, str(value))
 	return "res://Graphics/Cards/%s_%s.png" % [suit_map[suit], value_str]
+
+func give_cards(num):
+	var cards = []
+	for i in min(num,deck.size()):
+		cards.append(deck.pop_back())
+	return cards
